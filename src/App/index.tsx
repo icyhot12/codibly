@@ -1,11 +1,9 @@
 import TableComponent from '../components/TableComponent';
 
-import "./styles.css"
-
 function App() {
 
   return (
-    <div className='Main container mt-5'>
+    <div className='h-screen flex flex-col'>
       <TableComponent/>
     </div>
   );

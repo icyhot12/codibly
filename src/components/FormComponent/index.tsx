@@ -1,32 +1,43 @@
-import { useState } from 'react'
-import Form from 'react-bootstrap/Form';
+import { useEffect, useState } from "react";
 
 export interface IFormComponentProps {
-    setRowId: any
+  setRowId: any
 }
 
-const FormComponent = (props:IFormComponentProps) => {
+const FormComponent = (props: IFormComponentProps) => {
 
-    const [formValue, setFormValue] = useState<any>("")
+    const {setRowId} = props
 
-    const handleChange = (e:any) => {
-        const { value } = e.target
+    const [formValue, setFormValue] = useState<any>("");
 
-        setFormValue(value)
-        props.setRowId(value)
+    const handleChange = (event: any) => {
+        const { value } = event.target;
+        const numberRegex:RegExp = new RegExp(/^[0-9]+$|^$/)
+        setFormValue((prevFormValue:any) => {
+            if(numberRegex.test(value)){
+                return value
+            } else {
+                return prevFormValue
+            }
+        })
+    };
 
-    }
+    useEffect(() => {
+        setRowId(formValue)
+    },[formValue])
 
-    return (
-        <div className='col-2 my-2'>
-            <Form.Control 
-                type="text" 
-                placeholder="123..."
-                value={formValue}
-                onChange={(e) => handleChange(e)}
-            />
-        </div>
-    )
-}
+  return (
+    <form>
+      <input
+        className="border border-black rounded"
+        type="text"
+        name="id"
+        placeholder=" ID number"
+        value={formValue}
+        onChange={(event) => handleChange(event)}
+      />
+    </form>
+  );
+};
 
-export default FormComponent
+export default FormComponent;

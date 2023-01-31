@@ -1,113 +1,89 @@
 import { useState, useEffect } from "react";
-import Table from "react-bootstrap/Table";
-import {useQuery} from 'react-query';
+import { useQuery } from "react-query";
 import FormComponent from "../FormComponent";
 import LoaderComponent from "../LoaderComponent";
 import PaginationComponent from "../PaginationComponent";
 import ModalComponent from "../ModalComponent";
 
-import "./styles.css";
-
 const TableComponent = () => {
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [pagesQuantity, setPagesQuantity] = useState<number>(1);
+  const [rowId, setRowId] = useState<any>("");
 
-    const [currentPage, setCurrentPage] = useState<number>(1)
-    const [pagesQuantity, setPagesQuantity] = useState<number>(1)
-    const [modalVisible, setModalVisible] = useState<boolean>(false)
-    const [choosedModal, setChoosedModal] = useState<number>(1)
+  const perPage: number = 5;
 
-    const perPage: number = 5
+  //   const url: string = `https://reqres.in/api/products?per_page=${perPage}&page=${currentPage}`;
 
-    const url: string = `https://reqres.in/api/products?per_page=${perPage}&page=${currentPage}`;
+  const url: string = `https://reqres.in/api/products${
+    rowId.length > 0 ? `/${rowId}` : `?per_page=${perPage}&page=${currentPage}`
+  }`;
 
-    const getData = async () => {
-		const res = await fetch(url);
-		return res.json();
-	};
+  console.log(url);
 
-    const [rowId, setRowId] = useState<any>("")
+  const getData = async () => {
+    const res = await fetch(url);
+    return res.json();
+  };
 
-	const {data, error, isLoading} = useQuery(['data', currentPage, perPage], getData);
+  const { data, error, isLoading } = useQuery(
+    ["data", currentPage, perPage, url],
+    getData
+  );
 
-    useEffect(() => {
-        if(!isLoading){
-            setPagesQuantity(data.total_pages)
-        }
-    },[isLoading])
+  console.log(data);
 
-    const handleRowClick = (id:number) => {
-        setChoosedModal(id - 1)
-        setModalVisible(prevModalVisible => !prevModalVisible)
+  useEffect(() => {
+    if (!isLoading) {
+      setPagesQuantity(data.total_pages);
     }
+  }, [isLoading]);
 
-    const rows = data?.data.map((row:any, index:number) => {
-
-        const { id, name, year, color } = row
-
-        if(rowId.length === 0 || Number(rowId) == id){
-            return (
-                <tr 
-                id={id}
-                key={index} 
-                style={{background:`${color}`}}
-                onClick={() => handleRowClick(id)}
-                >
-                    <td>{id}</td>
-                    <td>{name}</td>
-                    <td>{year}</td>
-                </tr>
-            )
-        }
-    })
-
+  const rows = data?.data.map((row: any, index: number) => {
+    const { id, name, year, color } = row;
     return (
-        isLoading ? 
-        <div className="row">
-            <div className="col d-flex justify-content-center">
-                <LoaderComponent />
-            </div>
-        </div>
-        :
-        <>
-            <div className="row">
-                <FormComponent 
-                    setRowId={setRowId}
-                />
-            </div>
-            <div className="row">
-                <div className="col md:col-6 lg:col-9 mx-auto">
-                    <Table bordered hover>
-                    <thead>
-                        <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>Year</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {rows}
-                    </tbody>
-                    </Table>
-                </div>
-            </div>
-            <div className="row">
-                <PaginationComponent 
-                    pagesQuantity={pagesQuantity}
-                    currentPage={currentPage}
-                    setCurrentPage={setCurrentPage}
-                />
-            </div>
-            {modalVisible ? 
-            <ModalComponent 
-                id={data.data[choosedModal].id}
-                name="a"
-                year={1992}
-                color="#1231231"
-            />
-            :
-            null
-            }
-        </>
+      <tr
+        id={id}
+        key={index}
+        style={{ background: `${color}` }}
+        className="h-10"
+      >
+        <td className="text-center">{id}</td>
+        <td className="text-center">{name}</td>
+        <td className="text-center">{year}</td>
+      </tr>
     );
-    };
+  });
+
+// ROW FILTER ??
+
+  return isLoading ? (
+    <div className="flex justify-content-center items-center">
+      <LoaderComponent />
+    </div>
+  ) : (
+    <div className="mx-auto w-11/12 md:w-8/12 lg:w-5/12 mt-32 flex flex-col gap-4">
+      <FormComponent setRowId={setRowId} />
+      <table className="table-fix w-full rounded-lg overflow-hidden">
+        <thead className="bg-slate-200">
+          <tr className="h-16">
+            <th>ID</th>
+            <th>Name</th>
+            <th>Year</th>
+          </tr>
+        </thead>
+        <tbody>{rows}</tbody>
+      </table>
+      <div className="row">
+        <PaginationComponent
+          pagesQuantity={pagesQuantity}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          itemsQuantity={data.total}
+          perPage={perPage}
+        />
+      </div>
+    </div>
+  );
+};
 
 export default TableComponent;

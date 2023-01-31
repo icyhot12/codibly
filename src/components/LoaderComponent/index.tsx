@@ -1,14 +1,9 @@
-import React from 'react'
-import Spinner from 'react-bootstrap/Spinner';
-
 const LoaderComponent = () => {
   return (
-    <div>
-        <Spinner animation="border" role="status">
-            <span className="visually-hidden">Loading...</span>
-        </Spinner>
+    <div className="mx-auto mt-32">
+      <img src="/images/spinner.svg" />
     </div>
-  )
-}
+  );
+};
 
-export default LoaderComponent
+export default LoaderComponent;
