@@ -4,38 +4,43 @@ import FormComponent from "../FormComponent";
 import LoaderComponent from "../LoaderComponent";
 import PaginationComponent from "../PaginationComponent";
 import { useParams } from "react-router";
+import { useSearchParams } from "react-router-dom";
 
 const TableComponent = () => {
-
-  const {id} = useParams()
-
-  console.log(id)
 
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [pagesQuantity, setPagesQuantity] = useState<number>(1);
   const [rowId, setRowId] = useState<any>("");
+  const [searchParams, setSearchParams] = useSearchParams({});
 
-  const perPage: number = 5;
+  // take params from url
+  const rowid = searchParams.get('rowid'); //not working - manage situation when data is only object - not an array of objects
+  const perPage = searchParams.get('per_page');
+  const page = searchParams.get('page');
 
-  //   const url: string = `https://reqres.in/api/products?per_page=${perPage}&page=${currentPage}`;
-
-  const url: string = `https://reqres.in/api/products${
-    rowId.length > 0 ? `/${rowId}` : `?per_page=${perPage}&page=${currentPage}`
-  }`;
-
+  console.log(searchParams)
+  
+  useEffect(() => {
+    setSearchParams({
+      rowid: "",
+      per_page: "5",
+      page: "1"
+    })
+  },[])
+  
+  const url: any = `https://reqres.in/api/products${rowid ? `/${rowid}` : `?per_page=${perPage}&page=${page}`}`
+  
   const getData = async () => {
     const res = await fetch(url);
     return res.json();
   };
-
+  
   const { data, error, isLoading } = useQuery(
-    ["data", currentPage, perPage, url],
+    ["data"],
     getData
-  );
+    );
 
-  useEffect(() => {
-    setPagesQuantity(data?.total_pages);
-  }, [isLoading]);
+    console.log(data)
 
   const rows = data?.data.map((row: any, index: number) => {
     const { id, name, year, color } = row;
@@ -52,8 +57,6 @@ const TableComponent = () => {
       </tr>
     );
   });
-
-  // ROW FILTER ??
 
   return isLoading ? (
     <div className="flex justify-content-center items-center">
@@ -74,11 +77,12 @@ const TableComponent = () => {
       </table>
       <div className="row">
         <PaginationComponent
-          pagesQuantity={pagesQuantity}
-          currentPage={currentPage}
+          pagesQuantity={data?.total_pages}
+          currentPage={data?.page}
           setCurrentPage={setCurrentPage}
           itemsQuantity={data?.total}
-          perPage={perPage}
+          perPage={data?.per_page}
+          setSearchParams={setSearchParams}
         />
       </div>
     </div>

@@ -5,20 +5,36 @@ export interface IPaginationComponentProps {
     currentPage: number;
     setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
     itemsQuantity: number;
-    perPage: number;
+    perPage: any;
+    setSearchParams:any
 }
 
 const PaginationComponent = (props: IPaginationComponentProps) => {
 
-    const { pagesQuantity, currentPage, setCurrentPage, itemsQuantity, perPage } = props;
+    const { pagesQuantity, currentPage, setCurrentPage, itemsQuantity, perPage, setSearchParams } = props;
 
     const handlePageChange = (direction: number) => {
         if (currentPage === pagesQuantity && direction === 1) {
-        setCurrentPage(currentPage);
+        setSearchParams((prevSearchParams:any) => {
+            return({
+                ...prevSearchParams,
+                page: prevSearchParams.page
+            })
+        })
         } else if (currentPage === 1 && direction === -1) {
-        setCurrentPage(currentPage);
+            setSearchParams((prevSearchParams:any) => {
+                return({
+                    ...prevSearchParams,
+                    page: prevSearchParams.page
+                })
+            })
         } else {
-        setCurrentPage(currentPage + direction);
+            setSearchParams((prevSearchParams:any) => {
+                return({
+                    ...prevSearchParams,
+                    page: prevSearchParams.page + direction
+                })
+            })
         }
     };
 

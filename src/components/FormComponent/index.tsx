@@ -11,23 +11,28 @@ const FormComponent = (props: IFormComponentProps) => {
     const [formValue, setFormValue] = useState<any>("");
 
     const handleChange = (event: any) => {
-        const { value } = event.target;
-        const numberRegex:RegExp = new RegExp(/^[0-9]+$|^$/)
-        setFormValue((prevFormValue:any) => {
-            if(numberRegex.test(value)){
-                return value
-            } else {
-                return prevFormValue
-            }
-        })
+      const { value } = event.target;
+      const numberRegex:RegExp = new RegExp(/^[0-9]+$|^$/)
+      setFormValue((prevFormValue:any) => {
+        if(numberRegex.test(value)){
+          return value
+        } else {
+          return prevFormValue
+        }
+      })
     };
 
-    useEffect(() => {
-        setRowId(formValue)
-    },[formValue])
+    // useEffect(() => {
+    //     setRowId(formValue)
+    // },[formValue])
+
+    const handleSubmit = (event:any) => {
+      setRowId(formValue)
+      event.preventDefault()
+    }
 
   return (
-    <form>
+    <form className="flex gap-5" onSubmit={(event) => handleSubmit(event)}>
       <input
         className="border border-black rounded"
         type="text"
@@ -35,6 +40,11 @@ const FormComponent = (props: IFormComponentProps) => {
         placeholder=" ID number"
         value={formValue}
         onChange={(event) => handleChange(event)}
+      />
+      <input 
+        type="submit"
+        className="border border-black rounded py-1 px-4"
+        value="Filter"
       />
     </form>
   );
