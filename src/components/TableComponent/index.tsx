@@ -1,11 +1,15 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useQuery } from "react-query";
 import FormComponent from "../FormComponent";
 import LoaderComponent from "../LoaderComponent";
 import PaginationComponent from "../PaginationComponent";
 import ModalComponent from "../ModalComponent";
+import { Context } from "../../AppContext";
 
 const TableComponent = () => {
+
+  const {testValue} = useContext(Context)
+
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [pagesQuantity, setPagesQuantity] = useState<number>(1);
   const [rowId, setRowId] = useState<any>("");
@@ -55,6 +59,8 @@ const TableComponent = () => {
   });
 
 // ROW FILTER ??
+
+console.log(testValue)
 
   return isLoading ? (
     <div className="flex justify-content-center items-center">
