@@ -1,10 +1,16 @@
 import TableComponent from '../components/TableComponent';
+import {BrowserRouter, Routes, Route} from "react-router-dom"
 
 function App() {
 
   return (
     <div className='h-screen flex flex-col'>
-      <TableComponent/>
+      <BrowserRouter>
+        <Routes>
+          <Route index element={<TableComponent />} />
+          <Route path="/:id" element={<TableComponent />} />
+        </Routes>
+    </BrowserRouter>
     </div>
   );
 }

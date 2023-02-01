@@ -1,26 +1,23 @@
-import React, { createContext } from "react";
+import React, { createContext, useState } from "react";
 
 type ContextType = {
-    testValue: string
 };
 
 const Context = createContext<ContextType>({
-    testValue: ""
+  apiData: [],
+  setApiData: () => {},
 });
 
 const ContextProvider: any = (props: any) => {
 
-    const testValue = "abc"
-
-  return(
-    <Context.Provider 
-    value={{
-        testValue,
-    }}
+  return (
+    <Context.Provider
+      value={{
+      }}
     >
-        {props.children}
+      {props.children}
     </Context.Provider>
-  )
+  );
 };
 
 export { Context, ContextProvider };

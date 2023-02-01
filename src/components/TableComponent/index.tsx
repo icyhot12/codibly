@@ -1,14 +1,15 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "react-query";
 import FormComponent from "../FormComponent";
 import LoaderComponent from "../LoaderComponent";
 import PaginationComponent from "../PaginationComponent";
-import ModalComponent from "../ModalComponent";
-import { Context } from "../../AppContext";
+import { useParams } from "react-router";
 
 const TableComponent = () => {
 
-  const {testValue} = useContext(Context)
+  const {id} = useParams()
+
+  console.log(id)
 
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [pagesQuantity, setPagesQuantity] = useState<number>(1);
@@ -22,8 +23,6 @@ const TableComponent = () => {
     rowId.length > 0 ? `/${rowId}` : `?per_page=${perPage}&page=${currentPage}`
   }`;
 
-  console.log(url);
-
   const getData = async () => {
     const res = await fetch(url);
     return res.json();
@@ -34,12 +33,8 @@ const TableComponent = () => {
     getData
   );
 
-  console.log(data);
-
   useEffect(() => {
-    if (!isLoading) {
-      setPagesQuantity(data.total_pages);
-    }
+    setPagesQuantity(data?.total_pages);
   }, [isLoading]);
 
   const rows = data?.data.map((row: any, index: number) => {
@@ -58,9 +53,7 @@ const TableComponent = () => {
     );
   });
 
-// ROW FILTER ??
-
-console.log(testValue)
+  // ROW FILTER ??
 
   return isLoading ? (
     <div className="flex justify-content-center items-center">
@@ -84,7 +77,7 @@ console.log(testValue)
           pagesQuantity={pagesQuantity}
           currentPage={currentPage}
           setCurrentPage={setCurrentPage}
-          itemsQuantity={data.total}
+          itemsQuantity={data?.total}
           perPage={perPage}
         />
       </div>
