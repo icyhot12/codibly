@@ -45,14 +45,6 @@ const TableComponent = () => {
     getData
     );
 
-    useEffect(() => {
-      if(urlId && rowId.length > 0){
-        setRowId(urlId)
-        setFormValue(urlId)
-        console.log("test3")
-      }
-    },[isLoading])
-
   useEffect(() => {
     if (rowId.length > 0 && !isLoading) {
       const { id, name, year, color } = data?.data;

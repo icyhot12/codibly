@@ -1,5 +1,3 @@
-import { useEffect, useState } from "react";
-
 export interface IFormComponentProps {
   setRowId: any
   setSearchParams:any
@@ -28,7 +26,7 @@ const FormComponent = (props: IFormComponentProps) => {
       event.preventDefault()
     }
 
-    const handleButtonClick = (event:any) => {
+    const handleButtonClick = (event:React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
       setRowId("")
       setFormValue("")
       setSearchParams("")
