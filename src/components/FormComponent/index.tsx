@@ -22,10 +22,6 @@ const FormComponent = (props: IFormComponentProps) => {
       })
     };
 
-    // useEffect(() => {
-    //     setRowId(formValue)
-    // },[formValue])
-
     const handleSubmit = (event:any) => {
       setRowId(formValue)
       event.preventDefault()
@@ -41,11 +37,19 @@ const FormComponent = (props: IFormComponentProps) => {
         value={formValue}
         onChange={(event) => handleChange(event)}
       />
-      <input 
-        type="submit"
-        className="border border-black rounded py-1 px-4"
-        value="Filter"
-      />
+      <div className="flex gap-1">
+        <input 
+          type="submit"
+          className="border border-black rounded py-1 px-4"
+          value="Filter"
+        />
+        <button
+          className="border border-black rounded py-1 px-4"
+          onClick={() => setRowId("")}
+        >
+          Clear
+        </button>
+      </div>
     </form>
   );
 };
