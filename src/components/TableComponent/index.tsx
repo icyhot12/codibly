@@ -3,8 +3,8 @@ import { useQuery } from "react-query";
 import FormComponent from "../FormComponent";
 import LoaderComponent from "../LoaderComponent";
 import PaginationComponent from "../PaginationComponent";
-import { useSearchParams } from "react-router-dom";
-import { useParams } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams, redirect } from "react-router-dom";
+import axios, { AxiosError } from "axios";
 
 const TableComponent = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -13,46 +13,57 @@ const TableComponent = () => {
   const [searchParams, setSearchParams] = useSearchParams({});
   const [formValue, setFormValue] = useState<any>("");
 
-  const testId = useParams()
+  const urlId = searchParams.get("rowid");
+  const urlPage = searchParams.get("page");
 
-  console.log(testId)
+  const location = useLocation();
+  const navigate = useNavigate()
 
-  // after pasting url - it is redirecting to home ?
-  // what if filter is beyond range ?
+  useEffect(() => {
+    if (urlId) {
+      setRowId(urlId);
+      setFormValue(urlId);
+    } else if (!urlId) {
+      setRowId("");
+      setFormValue("");
+    }
+  }, [location]);
+
+  useEffect(() => {
+    if (rowId.length > 0) {
+      setSearchParams({
+        rowid: rowId,
+      });
+    }
+  }, [rowId]);
 
   const rowsPerPage: number = 5;
 
-  const url: any = `https://reqres.in/api/products${
+  const url: string = `https://reqres.in/api/products${
     rowId.length > 0
       ? `/${rowId}`
       : `?per_page=${rowsPerPage}&page=${currentPage}`
   }`;
 
-  const urlId = searchParams.get("rowid")
+  let error:any
 
-  useEffect(() => {
-    if(rowId.length > 0){
-      setSearchParams({
-        rowid: rowId
-      })
-    } else if (rowId.length === 0){
-      setSearchParams("")
-    }
-  },[rowId])
-
-  
   const getData = async () => {
-    const res = await fetch(url);
-    return res.json();
+    try {
+      const res = await axios.get(url);
+      return res?.data;
+    } catch (err) {
+      error = err
+      return err
+    }
   };
-  
-  const { data, error, isLoading } = useQuery(
+
+  const { data, isLoading, isError } = useQuery(
     ["data", currentPage, url],
     getData
-    );
+  );
 
   useEffect(() => {
-    if (rowId.length > 0 && !isLoading) {
+    if (rowId.length > 0 && !isLoading && data?.data) {
       const { id, name, year, color } = data?.data;
       setRows(() => {
         return (
@@ -63,7 +74,7 @@ const TableComponent = () => {
           </tr>
         );
       });
-    } else if (rowId.length === 0 && !isLoading) {
+    } else if (rowId.length === 0 && !isLoading && data.data) {
       setRows(() => {
         const tempRows = data?.data.map((row: any, index: number) => {
           const { id, name, year, color } = row;
@@ -85,17 +96,26 @@ const TableComponent = () => {
     }
   }, [rowId, url, data, isLoading]);
 
+  const handleHomeButton = () => {
+    setSearchParams({
+      rowid: ""
+    })
+    setRowId("");
+    setFormValue("");
+    redirect("/")
+  };
+
   return isLoading ? (
     <div className="flex justify-content-center items-center">
       <LoaderComponent />
     </div>
-  ) : (
+  ) : data ? (
     <div className="mx-auto w-11/12 md:w-8/12 lg:w-5/12 mt-32 flex flex-col gap-4">
-      <FormComponent 
-      setRowId={setRowId} 
-      setSearchParams={setSearchParams}
-      formValue={formValue}
-      setFormValue={setFormValue}
+      <FormComponent
+        setRowId={setRowId}
+        setSearchParams={setSearchParams}
+        formValue={formValue}
+        setFormValue={setFormValue}
       />
       <table className="table-fix w-full rounded-lg overflow-hidden">
         <thead className="bg-slate-200">
@@ -121,7 +141,12 @@ const TableComponent = () => {
         )}
       </div>
     </div>
-  );
+  ) :
+  <></>
 };
 
 export default TableComponent;
+
+// handle errors
+// handle page query
+// add modal

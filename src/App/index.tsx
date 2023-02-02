@@ -8,9 +8,8 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path='/' element={<TableComponent />} />
-          <Route path="/?rowid=:id" element={<TableComponent />} />
         </Routes>
-    </BrowserRouter>
+      </BrowserRouter>
     </div>
   );
 }

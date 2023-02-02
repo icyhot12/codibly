@@ -32,6 +32,7 @@ const FormComponent = (props: IFormComponentProps) => {
       setSearchParams("")
     }
 
+
   return (
     <form className="flex gap-5" onSubmit={(event) => handleSubmit(event)}>
       <input
