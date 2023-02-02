@@ -3,11 +3,14 @@ import { useQuery } from "react-query";
 import FormComponent from "../FormComponent";
 import LoaderComponent from "../LoaderComponent";
 import PaginationComponent from "../PaginationComponent";
+import { useSearchParams } from "react-router-dom";
 
 const TableComponent = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [rowId, setRowId] = useState<string>("");
   const [rows, setRows] = useState<any>(<tr></tr>);
+  const [searchParams, setSearchParams] = useSearchParams({});
+  const [formValue, setFormValue] = useState<any>("");
 
   const rowsPerPage: number = 5;
 
@@ -17,17 +20,38 @@ const TableComponent = () => {
       : `?per_page=${rowsPerPage}&page=${currentPage}`
   }`;
 
-  console.log(url);
+  const urlId = searchParams.get("rowid")
 
+  useEffect(() => {
+    if(rowId.length > 0){
+      setSearchParams({
+        rowid: rowId
+      })
+      console.log("test1")
+    } else if (rowId.length === 0){
+      setSearchParams("")
+      console.log("test2") //ok
+    }
+  },[rowId])
+
+  
   const getData = async () => {
     const res = await fetch(url);
     return res.json();
   };
-
+  
   const { data, error, isLoading } = useQuery(
     ["data", currentPage, url],
     getData
-  );
+    );
+
+    useEffect(() => {
+      if(urlId && rowId.length > 0){
+        setRowId(urlId)
+        setFormValue(urlId)
+        console.log("test3")
+      }
+    },[isLoading])
 
   useEffect(() => {
     if (rowId.length > 0 && !isLoading) {
@@ -69,7 +93,12 @@ const TableComponent = () => {
     </div>
   ) : (
     <div className="mx-auto w-11/12 md:w-8/12 lg:w-5/12 mt-32 flex flex-col gap-4">
-      <FormComponent setRowId={setRowId} />
+      <FormComponent 
+      setRowId={setRowId} 
+      setSearchParams={setSearchParams}
+      formValue={formValue}
+      setFormValue={setFormValue}
+      />
       <table className="table-fix w-full rounded-lg overflow-hidden">
         <thead className="bg-slate-200">
           <tr className="h-16">

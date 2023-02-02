@@ -2,13 +2,14 @@ import { useEffect, useState } from "react";
 
 export interface IFormComponentProps {
   setRowId: any
+  setSearchParams:any
+  formValue: any
+  setFormValue: any
 }
 
 const FormComponent = (props: IFormComponentProps) => {
 
-    const {setRowId} = props
-
-    const [formValue, setFormValue] = useState<any>("");
+    const {setRowId, setSearchParams, formValue, setFormValue } = props
 
     const handleChange = (event: any) => {
       const { value } = event.target;
@@ -25,6 +26,12 @@ const FormComponent = (props: IFormComponentProps) => {
     const handleSubmit = (event:any) => {
       setRowId(formValue)
       event.preventDefault()
+    }
+
+    const handleButtonClick = (event:any) => {
+      setRowId("")
+      setFormValue("")
+      setSearchParams("")
     }
 
   return (
@@ -45,7 +52,7 @@ const FormComponent = (props: IFormComponentProps) => {
         />
         <button
           className="border border-black rounded py-1 px-4"
-          onClick={() => setRowId("")}
+          onClick={(event) => handleButtonClick(event)}
         >
           Clear
         </button>
