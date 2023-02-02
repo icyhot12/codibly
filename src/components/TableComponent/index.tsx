@@ -4,6 +4,7 @@ import FormComponent from "../FormComponent";
 import LoaderComponent from "../LoaderComponent";
 import PaginationComponent from "../PaginationComponent";
 import { useSearchParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 const TableComponent = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -11,6 +12,13 @@ const TableComponent = () => {
   const [rows, setRows] = useState<any>(<tr></tr>);
   const [searchParams, setSearchParams] = useSearchParams({});
   const [formValue, setFormValue] = useState<any>("");
+
+  const testId = useParams()
+
+  console.log(testId)
+
+  // after pasting url - it is redirecting to home ?
+  // what if filter is beyond range ?
 
   const rowsPerPage: number = 5;
 
@@ -27,10 +35,8 @@ const TableComponent = () => {
       setSearchParams({
         rowid: rowId
       })
-      console.log("test1")
     } else if (rowId.length === 0){
       setSearchParams("")
-      console.log("test2") //ok
     }
   },[rowId])
 

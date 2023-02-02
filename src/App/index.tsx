@@ -7,8 +7,8 @@ function App() {
     <div className='h-screen flex flex-col'>
       <BrowserRouter>
         <Routes>
-          <Route index element={<TableComponent />} />
-          <Route path="/:id" element={<TableComponent />} />
+          <Route path='/' element={<TableComponent />} />
+          <Route path="/?rowid=:id" element={<TableComponent />} />
         </Routes>
     </BrowserRouter>
     </div>
