@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useQuery, setLogger } from "react-query";
 import FormComponent from "../FormComponent";
 import LoaderComponent from "../LoaderComponent";
@@ -6,12 +6,16 @@ import PaginationComponent from "../PaginationComponent";
 import {
   useLocation,
   useNavigate,
-  useSearchParams,
-  redirect,
+  useSearchParams
 } from "react-router-dom";
 import axios from "axios";
+import { Context } from "../../AppContext";
+import CustomModal from "../ModalComponent";
 
 const TableComponent = () => {
+
+  const { modalValues, setModalValues } = useContext(Context)
+
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [rowId, setRowId] = useState<string>("");
   const [rows, setRows] = useState<any>(<tr></tr>);
@@ -88,9 +92,20 @@ const TableComponent = () => {
   useEffect(() => {
     if (rowId.length > 0 && !isLoading && data?.data) {
       const { id, name, year, color } = data?.data;
+
       setRows(() => {
         return (
-          <tr id={id} style={{ background: `${color}` }} className="h-10">
+          <tr 
+            id={id} 
+            style={{ background: `${color}` }} 
+            className="h-10"
+            onClick={() => setModalValues(() => {
+              return ({
+                ...data?.data,
+                open: true
+              })
+            })}
+          >
             <td className="text-center">{id}</td>
             <td className="text-center">{name}</td>
             <td className="text-center">{year}</td>
@@ -107,6 +122,12 @@ const TableComponent = () => {
               key={index}
               style={{ background: `${color}` }}
               className="h-10"
+              onClick={() => setModalValues(() => {
+                return ({
+                  ...row,
+                  open: true
+                })
+              })}
             >
               <td className="text-center">{id}</td>
               <td className="text-center">{name}</td>
@@ -154,6 +175,7 @@ const TableComponent = () => {
           />
         )}
       </div>
+      {modalValues.open ? <CustomModal /> : "" }
     </div>
   ) : (
     <></>
@@ -161,5 +183,3 @@ const TableComponent = () => {
 };
 
 export default TableComponent;
-
-// add modal
