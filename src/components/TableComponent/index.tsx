@@ -1,23 +1,28 @@
 import { useState, useEffect } from "react";
-import { useQuery } from "react-query";
+import { useQuery, setLogger } from "react-query";
 import FormComponent from "../FormComponent";
 import LoaderComponent from "../LoaderComponent";
 import PaginationComponent from "../PaginationComponent";
-import { useLocation, useNavigate, useSearchParams, redirect } from "react-router-dom";
-import axios, { AxiosError } from "axios";
+import {
+  useLocation,
+  useNavigate,
+  useSearchParams,
+  redirect,
+} from "react-router-dom";
+import axios from "axios";
 
 const TableComponent = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [rowId, setRowId] = useState<string>("");
   const [rows, setRows] = useState<any>(<tr></tr>);
   const [searchParams, setSearchParams] = useSearchParams({});
-  const [formValue, setFormValue] = useState<any>("");
+  const [formValue, setFormValue] = useState<string>("");
 
   const urlId = searchParams.get("rowid");
   const urlPage = searchParams.get("page");
 
   const location = useLocation();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (urlId) {
@@ -28,6 +33,20 @@ const TableComponent = () => {
       setFormValue("");
     }
   }, [location]);
+
+  useEffect(() => {
+    if (urlPage) {
+      setCurrentPage(Number(urlPage));
+    } else if (!urlPage) {
+      setCurrentPage(1)
+    }
+  }, []);
+
+  useEffect(() => {
+    setSearchParams({
+      page: currentPage.toString()
+    })
+  }, [currentPage]);
 
   useEffect(() => {
     if (rowId.length > 0) {
@@ -45,22 +64,26 @@ const TableComponent = () => {
       : `?per_page=${rowsPerPage}&page=${currentPage}`
   }`;
 
-  let error:any
-
   const getData = async () => {
-    try {
-      const res = await axios.get(url);
-      return res?.data;
-    } catch (err) {
-      error = err
-      return err
-    }
+    const res = await axios.get(url);
+    return res?.data;
   };
 
-  const { data, isLoading, isError } = useQuery(
-    ["data", currentPage, url],
-    getData
-  );
+  setLogger({
+    log: () => {},
+    warn: () => {},
+    error: () => {},
+  });
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["data", currentPage, url],
+    queryFn: getData,
+    retry: false,
+    onError(err: any) {
+      alert(err.message);
+      navigate("/");
+    },
+  });
 
   useEffect(() => {
     if (rowId.length > 0 && !isLoading && data?.data) {
@@ -95,15 +118,6 @@ const TableComponent = () => {
       });
     }
   }, [rowId, url, data, isLoading]);
-
-  const handleHomeButton = () => {
-    setSearchParams({
-      rowid: ""
-    })
-    setRowId("");
-    setFormValue("");
-    redirect("/")
-  };
 
   return isLoading ? (
     <div className="flex justify-content-center items-center">
@@ -141,12 +155,11 @@ const TableComponent = () => {
         )}
       </div>
     </div>
-  ) :
-  <></>
+  ) : (
+    <></>
+  );
 };
 
 export default TableComponent;
 
-// handle errors
-// handle page query
 // add modal

@@ -1,15 +1,15 @@
 export interface IFormComponentProps {
-  setRowId: any
-  setSearchParams:any
-  formValue: any
-  setFormValue: any
+  setRowId: React.Dispatch<React.SetStateAction<string>>
+  setSearchParams: any
+  formValue: string
+  setFormValue: React.Dispatch<React.SetStateAction<string>>
 }
 
 const FormComponent = (props: IFormComponentProps) => {
 
     const {setRowId, setSearchParams, formValue, setFormValue } = props
 
-    const handleChange = (event: any) => {
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
       const numberRegex:RegExp = new RegExp(/^[0-9]+$|^$/)
       setFormValue((prevFormValue:any) => {
@@ -21,17 +21,16 @@ const FormComponent = (props: IFormComponentProps) => {
       })
     };
 
-    const handleSubmit = (event:any) => {
+    const handleSubmit = (event:React.FormEvent<HTMLFormElement>) => {
       setRowId(formValue)
       event.preventDefault()
     }
 
-    const handleButtonClick = (event:React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    const handleButtonClick = () => {
       setRowId("")
       setFormValue("")
       setSearchParams("")
     }
-
 
   return (
     <form className="flex gap-5" onSubmit={(event) => handleSubmit(event)}>
@@ -51,7 +50,7 @@ const FormComponent = (props: IFormComponentProps) => {
         />
         <button
           className="border border-black rounded py-1 px-4"
-          onClick={(event) => handleButtonClick(event)}
+          onClick={handleButtonClick}
         >
           Clear
         </button>
