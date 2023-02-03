@@ -3,18 +3,13 @@ import { useQuery, setLogger } from "react-query";
 import FormComponent from "../FormComponent";
 import LoaderComponent from "../LoaderComponent";
 import PaginationComponent from "../PaginationComponent";
-import {
-  useLocation,
-  useNavigate,
-  useSearchParams
-} from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";
 import { Context } from "../../AppContext";
 import CustomModal from "../ModalComponent";
 
 const TableComponent = () => {
-
-  const { modalValues, setModalValues } = useContext(Context)
+  const { modalValues, setModalValues } = useContext(Context);
 
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [rowId, setRowId] = useState<string>("");
@@ -42,14 +37,14 @@ const TableComponent = () => {
     if (urlPage) {
       setCurrentPage(Number(urlPage));
     } else if (!urlPage) {
-      setCurrentPage(1)
+      setCurrentPage(1);
     }
   }, []);
 
   useEffect(() => {
     setSearchParams({
-      page: currentPage.toString()
-    })
+      page: currentPage.toString(),
+    });
   }, [currentPage]);
 
   useEffect(() => {
@@ -95,16 +90,18 @@ const TableComponent = () => {
 
       setRows(() => {
         return (
-          <tr 
-            id={id} 
-            style={{ background: `${color}` }} 
+          <tr
+            id={id}
+            style={{ background: `${color}` }}
             className="h-10"
-            onClick={() => setModalValues(() => {
-              return ({
-                ...data?.data,
-                open: true
+            onClick={() =>
+              setModalValues(() => {
+                return {
+                  ...data?.data,
+                  open: true,
+                };
               })
-            })}
+            }
           >
             <td className="text-center">{id}</td>
             <td className="text-center">{name}</td>
@@ -122,12 +119,14 @@ const TableComponent = () => {
               key={index}
               style={{ background: `${color}` }}
               className="h-10"
-              onClick={() => setModalValues(() => {
-                return ({
-                  ...row,
-                  open: true
+              onClick={() =>
+                setModalValues(() => {
+                  return {
+                    ...row,
+                    open: true,
+                  };
                 })
-              })}
+              }
             >
               <td className="text-center">{id}</td>
               <td className="text-center">{name}</td>
@@ -175,7 +174,7 @@ const TableComponent = () => {
           />
         )}
       </div>
-      {modalValues.open ? <CustomModal /> : "" }
+      {modalValues.open ? <CustomModal /> : ""}
     </div>
   ) : (
     <></>

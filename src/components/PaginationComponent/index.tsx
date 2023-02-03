@@ -9,18 +9,18 @@ export interface IPaginationComponentProps {
 }
 
 const PaginationComponent = (props: IPaginationComponentProps) => {
-
-  const { pagesQuantity, currentPage, setCurrentPage, itemsQuantity, perPage } = props;
+  const { pagesQuantity, currentPage, setCurrentPage, itemsQuantity, perPage } =
+    props;
 
   const handlePageChange = (direction: number) => {
     if (currentPage === pagesQuantity && direction === 1) {
-    setCurrentPage(currentPage);
+      setCurrentPage(currentPage);
     } else if (currentPage === 1 && direction === -1) {
-    setCurrentPage(currentPage);
+      setCurrentPage(currentPage);
     } else {
-    setCurrentPage(currentPage + direction)
+      setCurrentPage(currentPage + direction);
+    }
   };
-}
 
   const paginationItems = [...Array(pagesQuantity)].map((element, index) => {
     return (

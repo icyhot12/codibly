@@ -1,8 +1,8 @@
-import React, { createContext, useState } from "react";
+import { createContext, useState } from "react";
 
 type ContextType = {
-  modalValues: any
-  setModalValues: any
+  modalValues: any;
+  setModalValues: any;
 };
 
 const Context = createContext<ContextType>({
@@ -11,14 +11,13 @@ const Context = createContext<ContextType>({
 });
 
 const ContextProvider: any = (props: any) => {
-
-  const [modalValues, setModalValues] = useState<any>("")
+  const [modalValues, setModalValues] = useState<any>("");
 
   return (
     <Context.Provider
       value={{
         modalValues,
-        setModalValues
+        setModalValues,
       }}
     >
       {props.children}

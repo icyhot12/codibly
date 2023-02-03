@@ -1,28 +1,24 @@
 import { Fragment, useState, useContext } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { Context } from "../../AppContext";
+import ModalRow from "./ModalRow";
 
 export interface ICustomModalProps {
-  color: string
-  id: number
-  name: string
-  pantone_value: string
-  year: number
+  color: string;
+  id: number;
+  name: string;
+  pantone_value: string;
+  year: number;
 }
 
 export default function CustomModal() {
+  const { modalValues, setModalValues } = useContext(Context);
 
-  const {modalValues, setModalValues} = useContext(Context)
-
-  const {id, name, year, open, pantone_value, color} = modalValues
+  const { id, name, year, open, pantone_value, color } = modalValues;
 
   return (
     <Transition.Root show={open} as={Fragment}>
-      <Dialog
-        as="div"
-        className="relative z-10"
-        onClose={() => {}}
-      >
+      <Dialog as="div" className="relative z-10" onClose={() => {}}>
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"
@@ -50,36 +46,23 @@ export default function CustomModal() {
                 <div className="p-5 flex flex-col gap-2">
                   <h1 className="font-semibold text-lg">Row details</h1>
                   <div className="text-sm text-gray-500 flex flex-col gap-2">
-                    <div>
-                      <span className="font-thin">Id: </span>
-                      <span className="font-bold">{id}</span>
-                    </div>
-                    <div>
-                      <span className="font-thin">Name: </span>
-                      <span className="font-bold">{name}</span>
-                    </div>
-                    <div>
-                      <span className="font-thin">Color: </span>
-                      <span className="font-bold">{color}</span>
-                    </div>
-                    <div>
-                      <span className="font-thin">Year: </span>
-                      <span className="font-bold">{year}</span>
-                    </div>
-                    <div>
-                      <span className="font-thin">Pantone: </span>
-                      <span className="font-bold">{pantone_value}</span>
-                    </div>
+                    <ModalRow label="Id" value={id} />
+                    <ModalRow label="Name" value={name} />
+                    <ModalRow label="Color" value={color} />
+                    <ModalRow label="Year" value={year} />
+                    <ModalRow label="Pantone" value={pantone_value} />
                   </div>
                   <button
                     type="button"
                     className="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 sm:w-auto sm:text-sm"
-                    onClick={() => setModalValues((prevModalValues:any) => {
-                      return ({
-                        ...prevModalValues,
-                        open: false
+                    onClick={() =>
+                      setModalValues((prevModalValues: any) => {
+                        return {
+                          ...prevModalValues,
+                          open: false,
+                        };
                       })
-                    })}
+                    }
                   >
                     Cancel
                   </button>
